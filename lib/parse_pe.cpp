@@ -92,7 +92,7 @@ void PEParser::PrintNTHeader() {
     std::cout << std::setw(kColumnWidth) << "Characteristics" << "0x" << NT_headers32.FileHeader.Characteristics << std::endl;
     std::cout << std::endl << std::endl;
 
-    std::cout << "\033[1;34m" << "[IMAGE_NT_HEADERS - IMAGE_OPTIONAL_HEADER32]" << "\033[0m" << std::endl;
+    std::cout << "\033[1;34m" << "[IMAGE_NT_HEADERS - IMAGE_OPTIONAL_HEADERS32]" << "\033[0m" << std::endl;
     std::cout << std::setw(kColumnWidth) << "Magic" << "0x" << NT_headers32.OptionalHeader.Magic << std::endl;
     std::cout << std::setw(kColumnWidth) << "AddressOfEntryPoint" << "0x" << NT_headers32.OptionalHeader.AddressOfEntryPoint << std::endl;
     std::cout << std::setw(kColumnWidth) << "ImageBase" << "0x" << NT_headers32.OptionalHeader.ImageBase << std::endl;
@@ -121,7 +121,7 @@ void PEParser::PrintNTHeader() {
     std::cout << std::setw(kColumnWidth) << "Characteristics" << "0x" << NT_headers64.FileHeader.Characteristics << std::endl;
     std::cout << std::endl << std::endl;
 
-    std::cout << "\033[1;34m" << "[IMAGE_NT_HEADERS - IMAGE_OPTIONAL_HEADER64]" << "\033[0m" << std::endl;
+    std::cout << "\033[1;34m" << "[IMAGE_NT_HEADERS - IMAGE_OPTIONAL_HEADERS64]" << "\033[0m" << std::endl;
     std::cout << std::setw(kColumnWidth) << "Magic" << "0x" << NT_headers64.OptionalHeader.Magic << std::endl;
     std::cout << std::setw(kColumnWidth) << "AddressOfEntryPoint" << "0x" << NT_headers64.OptionalHeader.AddressOfEntryPoint << std::endl;
     std::cout << std::setw(kColumnWidth) << "ImageBase" << "0x" << NT_headers64.OptionalHeader.ImageBase << std::endl;
