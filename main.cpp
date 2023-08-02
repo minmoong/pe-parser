@@ -23,7 +23,51 @@ int main(int argc, char *argv[]) {
   
   PEParser pe_parser(p_file);
 
-  pe_parser.PrintHeaders();
+  const int VIEW_ALL_CHOICE       = 1,
+            DOS_HEADER_CHOICE     = 2,
+            NT_HEADER_CHOICE      = 3,
+            SECTION_HEADER_CHOICE = 4,
+            QUIT_CHOICE           = 5;
+
+  int choice;
+
+  std::cout << "---------- MENU ----------" << std::endl;
+  std::cout << "1. View all" << std::endl;
+  std::cout << "2. View DOS header" << std::endl;
+  std::cout << "3. View NT headers" << std::endl;
+  std::cout << "4. View SECTION headers" << std::endl;
+  std::cout << "5. Quit" << std::endl;
+  std::cout << "> ";
+  std::cin >> choice;
+  std::cout << std::endl;
+
+  switch (choice)
+  {
+    case VIEW_ALL_CHOICE:
+      pe_parser.PrintHeaders();
+      break;
+
+    case DOS_HEADER_CHOICE:
+      pe_parser.PrintDOSHeader();
+      break;
+    
+    case NT_HEADER_CHOICE:
+      pe_parser.PrintNTHeader();
+      break;
+    
+    case SECTION_HEADER_CHOICE:
+      pe_parser.PrintSECTIONHeader();
+      break;
+    
+    case QUIT_CHOICE:
+      std::cout << "Bye bye!" << std::endl;
+      exit(EXIT_SUCCESS);
+      break;
+    
+    default:
+      std::cout << "Menu not found" << std::endl;
+      break;
+  }
 
   return 0;
 

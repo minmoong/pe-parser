@@ -27,6 +27,7 @@ void PEParser::ParseHeaders() {
 
   ParseDOSHeader();
   ParseNTHeader();
+  ParseSECTIONHeader();
 
 }
 
@@ -34,6 +35,7 @@ void PEParser::PrintHeaders() {
 
   PrintDOSHeader();
   PrintNTHeader();
+  PrintSECTIONHeader();
 
 }
 
@@ -58,6 +60,21 @@ void PEParser::ParseNTHeader() {
     fseek(p_file, DOS_header.e_lfanew, SEEK_SET);
     fread(&NT_headers64, sizeof(IMAGE_NT_HEADERS64), 1, p_file);
 
+  }
+
+}
+
+void PEParser::ParseSECTIONHeader() {
+
+  ULONGLONG offset {DOS_header.e_lfanew + (arch == "x32" ? sizeof(IMAGE_NT_HEADERS32) : sizeof(IMAGE_NT_HEADERS64))};
+  number_of_sections = arch == "x32" ? NT_headers32.FileHeader.NumberOfSections
+                                          : NT_headers64.FileHeader.NumberOfSections;
+
+  p_SECTION_headers = new IMAGE_SECTION_HEADER[number_of_sections];
+
+  for (int i {}; i < number_of_sections; ++i) {
+    fseek(p_file, offset + sizeof(IMAGE_SECTION_HEADER)*i, SEEK_SET);
+    fread(&p_SECTION_headers[i], sizeof(IMAGE_SECTION_HEADER), 1, p_file);
   }
 
 }
@@ -92,7 +109,7 @@ void PEParser::PrintNTHeader() {
     std::cout << std::setw(kColumnWidth) << "Characteristics" << "0x" << NT_headers32.FileHeader.Characteristics << std::endl;
     std::cout << std::endl << std::endl;
 
-    std::cout << "\033[1;34m" << "[IMAGE_NT_HEADERS - IMAGE_OPTIONAL_HEADERS32]" << "\033[0m" << std::endl;
+    std::cout << "\033[1;34m" << "[IMAGE_NT_HEADERS - IMAGE_OPTIONAL_HEADER32]" << "\033[0m" << std::endl;
     std::cout << std::setw(kColumnWidth) << "Magic" << "0x" << NT_headers32.OptionalHeader.Magic << std::endl;
     std::cout << std::setw(kColumnWidth) << "AddressOfEntryPoint" << "0x" << NT_headers32.OptionalHeader.AddressOfEntryPoint << std::endl;
     std::cout << std::setw(kColumnWidth) << "ImageBase" << "0x" << NT_headers32.OptionalHeader.ImageBase << std::endl;
@@ -121,7 +138,7 @@ void PEParser::PrintNTHeader() {
     std::cout << std::setw(kColumnWidth) << "Characteristics" << "0x" << NT_headers64.FileHeader.Characteristics << std::endl;
     std::cout << std::endl << std::endl;
 
-    std::cout << "\033[1;34m" << "[IMAGE_NT_HEADERS - IMAGE_OPTIONAL_HEADERS64]" << "\033[0m" << std::endl;
+    std::cout << "\033[1;34m" << "[IMAGE_NT_HEADERS - IMAGE_OPTIONAL_HEADER64]" << "\033[0m" << std::endl;
     std::cout << std::setw(kColumnWidth) << "Magic" << "0x" << NT_headers64.OptionalHeader.Magic << std::endl;
     std::cout << std::setw(kColumnWidth) << "AddressOfEntryPoint" << "0x" << NT_headers64.OptionalHeader.AddressOfEntryPoint << std::endl;
     std::cout << std::setw(kColumnWidth) << "ImageBase" << "0x" << NT_headers64.OptionalHeader.ImageBase << std::endl;
@@ -134,6 +151,26 @@ void PEParser::PrintNTHeader() {
     std::cout << std::setw(kColumnWidth) << "RVA of IMPORT Directory" << "0x" << NT_headers64.OptionalHeader.DataDirectory[1].VirtualAddress << std::endl;
     std::cout << std::setw(kColumnWidth) << "size of IMPORT Directory" << "0x" << NT_headers64.OptionalHeader.DataDirectory[1].Size << std::endl;
     std::cout << std::endl << std::endl;
+
+  }
+
+}
+
+void PEParser::PrintSECTIONHeader() {
+
+  std::cout << "\033[1;34m" << "[IMAGE_SECTION_HEADER]" << "\033[0m" << std::endl;
+  std::cout << std::left;
+  std::cout << std::uppercase << std::hex;
+  
+  for (int i {}; i < number_of_sections; ++i) {
+    
+    std::cout << std::setw(kColumnWidth) << "Name" << p_SECTION_headers[i].Name << std::endl;
+    std::cout << std::setw(kColumnWidth) << "VirtualSize" << "0x" << p_SECTION_headers[i].Misc.VirtualSize << std::endl;
+    std::cout << std::setw(kColumnWidth) << "VirtualAddress" << "0x" << p_SECTION_headers[i].VirtualAddress << std::endl;
+    std::cout << std::setw(kColumnWidth) << "SizeOfRawData" << "0x" << p_SECTION_headers[i].SizeOfRawData << std::endl;
+    std::cout << std::setw(kColumnWidth) << "PointerToRawData" << "0x" << p_SECTION_headers[i].PointerToRawData << std::endl;
+    std::cout << std::setw(kColumnWidth) << "Characteristics" << "0x" << p_SECTION_headers[i].Characteristics << std::endl;
+    std::cout << std::endl;
 
   }
 
